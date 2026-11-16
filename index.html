@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PangKuliah — Manajemen Akademik Mahasiswa</title>
 
-  <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -24,20 +22,13 @@
     };
   </script>
 
-  <!-- React 18 & ReactDOM 18 UMD -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-
-  <!-- Babel Standalone untuk kompilasi JSX langsung di browser -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <!-- Lucide Icons UMD -->
-  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 
   <style>
-    * {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+    * { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     @keyframes popIn {
       0% { transform: scale(0.92); opacity: 0; }
       70% { transform: scale(1.03); opacity: 1; }
@@ -47,23 +38,8 @@
       0% { transform: translateY(0) scale(0.8); opacity: 1; }
       100% { transform: translateY(-28px) scale(1.25); opacity: 0; }
     }
-    .animate-pop {
-      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .animate-sparkle {
-      animation: floatSparkle 0.75s ease-out forwards;
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.35);
-      border-radius: 9999px;
-    }
+    .animate-pop { animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-sparkle { animation: floatSparkle 0.75s ease-out forwards; }
   </style>
 </head>
 <body class="antialiased selection:bg-violet-500 selection:text-white">
@@ -72,46 +48,19 @@
   <script type="text/babel">
     const { useState, useEffect, useMemo, useRef } = React;
 
-    // =========================================================================
-    // 1. BRIDGE LUCIDE ICONS (AMAN & ANTI-CRASH DI BROWSER)
-    // =========================================================================
     function createLucideIcon(iconName) {
       return function LucideIcon({ size = 18, strokeWidth = 2.1, className = '', ...props }) {
-        const iconNodes = window.lucide?.icons?.[iconName];
+        const iconNodes = window.lucide && window.lucide.icons ? window.lucide.icons[iconName] : null;
         if (!Array.isArray(iconNodes)) {
           return (
-            <svg
-              width={size}
-              height={size}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={className}
-              {...props}
-            >
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
               <circle cx="12" cy="12" r="9" />
             </svg>
           );
         }
         return (
-          <svg
-            width={size}
-            height={size}
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={className}
-            {...props}
-          >
-            {iconNodes.map(([tag, attrs], index) =>
-              React.createElement(tag, { ...attrs, key: index })
-            )}
+          <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
+            {iconNodes.map(([tag, attrs], index) => React.createElement(tag, { ...attrs, key: index }))}
           </svg>
         );
       };
@@ -149,9 +98,6 @@
     const Award = createLucideIcon('Award');
     const CalendarPlus = createLucideIcon('CalendarPlus');
 
-    // =========================================================================
-    // 2. KONFIGURASI MULTI-TEMA (4 PRESET) & 5 WARNA PASTEL MATA KULIAH
-    // =========================================================================
     const THEME_PRESETS = {
       canva: {
         id: 'canva',
@@ -240,7 +186,6 @@
         darkCard: 'bg-violet-950/35 border-violet-700/40',
         lightBadge: 'bg-violet-100 text-violet-700 border-violet-200',
         darkBadge: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
-        bar: 'bg-violet-500',
       },
       sky: {
         id: 'sky',
@@ -250,7 +195,6 @@
         darkCard: 'bg-sky-950/35 border-sky-700/40',
         lightBadge: 'bg-sky-100 text-sky-700 border-sky-200',
         darkBadge: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-        bar: 'bg-sky-500',
       },
       mint: {
         id: 'mint',
@@ -260,7 +204,6 @@
         darkCard: 'bg-emerald-950/35 border-emerald-700/40',
         lightBadge: 'bg-emerald-100 text-emerald-700 border-emerald-200',
         darkBadge: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-        bar: 'bg-emerald-500',
       },
       peach: {
         id: 'peach',
@@ -270,7 +213,6 @@
         darkCard: 'bg-rose-950/35 border-rose-700/40',
         lightBadge: 'bg-rose-100 text-rose-700 border-rose-200',
         darkBadge: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-        bar: 'bg-rose-500',
       },
       yellow: {
         id: 'yellow',
@@ -280,17 +222,12 @@
         darkCard: 'bg-amber-950/35 border-amber-700/40',
         lightBadge: 'bg-amber-100 text-amber-800 border-amber-200',
         darkBadge: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-        bar: 'bg-amber-500',
       },
     };
 
-    // Urutan sesuai Date.prototype.getDay() (0 = Minggu ... 6 = Sabtu)
     const ALL_DAYS = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
     const DAYS = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 
-    // =========================================================================
-    // 3. DATA AWAL (DUMMY DATA MAHASISWA INDONESIA)
-    // =========================================================================
     const INITIAL_PROFILE = {
       name: 'Nadia Putri',
       nim: '23051204088',
@@ -300,103 +237,20 @@
     };
 
     const INITIAL_COURSES = [
-      {
-        id: 'mk-1',
-        code: 'IF301',
-        name: 'Pemrograman Web Lanjut',
-        lecturer: 'Dr. Raka Pratama, M.Kom.',
-        sks: 3,
-        color: 'lavender',
-      },
-      {
-        id: 'mk-2',
-        code: 'IF304',
-        name: 'Kecerdasan Buatan',
-        lecturer: 'Prof. Siti Rahmawati, Ph.D.',
-        sks: 3,
-        color: 'sky',
-      },
-      {
-        id: 'mk-3',
-        code: 'IF307',
-        name: 'Interaksi Manusia & Komputer',
-        lecturer: 'Dian Kusuma, S.Kom., M.T.',
-        sks: 2,
-        color: 'mint',
-      },
-      {
-        id: 'mk-4',
-        code: 'IF310',
-        name: 'Basis Data Terdistribusi',
-        lecturer: 'Budi Santoso, M.Cs.',
-        sks: 3,
-        color: 'peach',
-      },
-      {
-        id: 'mk-5',
-        code: 'KU202',
-        name: 'Kewirausahaan Digital',
-        lecturer: 'Ayu Lestari, S.E., M.M.',
-        sks: 2,
-        color: 'yellow',
-      },
+      { id: 'mk-1', code: 'IF301', name: 'Pemrograman Web Lanjut', lecturer: 'Dr. Raka Pratama, M.Kom.', sks: 3, color: 'lavender' },
+      { id: 'mk-2', code: 'IF304', name: 'Kecerdasan Buatan', lecturer: 'Prof. Siti Rahmawati, Ph.D.', sks: 3, color: 'sky' },
+      { id: 'mk-3', code: 'IF307', name: 'Interaksi Manusia & Komputer', lecturer: 'Dian Kusuma, S.Kom., M.T.', sks: 2, color: 'mint' },
+      { id: 'mk-4', code: 'IF310', name: 'Basis Data Terdistribusi', lecturer: 'Budi Santoso, M.Cs.', sks: 3, color: 'peach' },
+      { id: 'mk-5', code: 'KU202', name: 'Kewirausahaan Digital', lecturer: 'Ayu Lestari, S.E., M.M.', sks: 2, color: 'yellow' },
     ];
 
     const INITIAL_SCHEDULES = [
-      {
-        id: 'sch-1',
-        courseId: 'mk-1',
-        day: 'Senin',
-        startTime: '08:00',
-        endTime: '10:30',
-        room: 'Lab Rekayasa Perangkat Lunak Lt. 3',
-        link: 'https://meet.google.com/abc-defg-hij',
-      },
-      {
-        id: 'sch-2',
-        courseId: 'mk-2',
-        day: 'Senin',
-        startTime: '13:00',
-        endTime: '15:30',
-        room: 'Gedung A2 - Ruang 204',
-        link: '',
-      },
-      {
-        id: 'sch-3',
-        courseId: 'mk-3',
-        day: 'Selasa',
-        startTime: '09:30',
-        endTime: '11:10',
-        room: 'Studio UI/UX Gedung B',
-        link: 'https://zoom.us/j/9988776655',
-      },
-      {
-        id: 'sch-4',
-        courseId: 'mk-4',
-        day: 'Rabu',
-        startTime: '10:00',
-        endTime: '12:30',
-        room: 'Lab Basis Data Lt. 2',
-        link: '',
-      },
-      {
-        id: 'sch-5',
-        courseId: 'mk-5',
-        day: 'Kamis',
-        startTime: '13:30',
-        endTime: '15:10',
-        room: 'Aula Kreatif Inkubator',
-        link: 'https://meet.google.com/biz-dig-2026',
-      },
-      {
-        id: 'sch-6',
-        courseId: 'mk-1',
-        day: 'Jumat',
-        startTime: '08:30',
-        endTime: '10:10',
-        room: 'Kelas Hybrid / Google Meet',
-        link: 'https://meet.google.com/abc-defg-hij',
-      },
+      { id: 'sch-1', courseId: 'mk-1', day: 'Senin', startTime: '08:00', endTime: '10:30', room: 'Lab Rekayasa Perangkat Lunak Lt. 3', link: 'https://meet.google.com/abc-defg-hij' },
+      { id: 'sch-2', courseId: 'mk-2', day: 'Senin', startTime: '13:00', endTime: '15:30', room: 'Gedung A2 - Ruang 204', link: '' },
+      { id: 'sch-3', courseId: 'mk-3', day: 'Selasa', startTime: '09:30', endTime: '11:10', room: 'Studio UI/UX Gedung B', link: 'https://zoom.us/j/9988776655' },
+      { id: 'sch-4', courseId: 'mk-4', day: 'Rabu', startTime: '10:00', endTime: '12:30', room: 'Lab Basis Data Lt. 2', link: '' },
+      { id: 'sch-5', courseId: 'mk-5', day: 'Kamis', startTime: '13:30', endTime: '15:10', room: 'Aula Kreatif Inkubator', link: 'https://meet.google.com/biz-dig-2026' },
+      { id: 'sch-6', courseId: 'mk-1', day: 'Jumat', startTime: '08:30', endTime: '10:10', room: 'Kelas Hybrid / Google Meet', link: 'https://meet.google.com/abc-defg-hij' },
     ];
 
     function getFutureISO(hoursFromNow) {
@@ -406,78 +260,19 @@
     }
 
     const INITIAL_TASKS = [
-      {
-        id: 'tsk-1',
-        courseId: 'mk-1',
-        title: 'Deploy Aplikasi React + Tailwind ke Vercel',
-        deadline: getFutureISO(5),
-        reminder: '1h',
-        completed: false,
-      },
-      {
-        id: 'tsk-2',
-        courseId: 'mk-3',
-        title: 'Wireframe & Usability Testing Prototipe Figma',
-        deadline: getFutureISO(26),
-        reminder: '1d',
-        completed: false,
-      },
-      {
-        id: 'tsk-3',
-        courseId: 'mk-2',
-        title: 'Laporan Praktikum Algoritma A* Search',
-        deadline: getFutureISO(52),
-        reminder: '3h',
-        completed: false,
-      },
-      {
-        id: 'tsk-4',
-        courseId: 'mk-4',
-        title: 'Query Sharding & Replikasi MongoDB',
-        deadline: getFutureISO(-12),
-        reminder: '1h',
-        completed: true,
-      },
+      { id: 'tsk-1', courseId: 'mk-1', title: 'Deploy Aplikasi React + Tailwind ke Vercel', deadline: getFutureISO(5), reminder: '1h', completed: false },
+      { id: 'tsk-2', courseId: 'mk-3', title: 'Wireframe & Usability Testing Prototipe Figma', deadline: getFutureISO(26), reminder: '1d', completed: false },
+      { id: 'tsk-3', courseId: 'mk-2', title: 'Laporan Praktikum Algoritma A* Search', deadline: getFutureISO(52), reminder: '3h', completed: false },
+      { id: 'tsk-4', courseId: 'mk-4', title: 'Query Sharding & Replikasi MongoDB', deadline: getFutureISO(-12), reminder: '1h', completed: true },
     ];
 
     const INITIAL_MATERIALS = [
-      {
-        id: 'mat-1',
-        courseId: 'mk-1',
-        meeting: 6,
-        title: 'State Management & Custom Hooks React',
-        link: 'https://drive.google.com/drive/folders/react-hooks-slides',
-        notes: 'Fokus pada useMemo, useCallback, serta sinkronisasi state dengan localStorage agar data tidak hilang saat refresh.',
-      },
-      {
-        id: 'mat-2',
-        courseId: 'mk-2',
-        meeting: 5,
-        title: 'Heuristic Search & Algoritma A*',
-        link: 'https://www.youtube.com/watch?v=ySN5Wnu88nE',
-        notes: 'Rumus evaluasi f(n) = g(n) + h(n). Pastikan fungsi heuristik bersifat admissible agar solusi selalu optimal.',
-      },
-      {
-        id: 'mat-3',
-        courseId: 'mk-3',
-        meeting: 4,
-        title: 'Prinsip Desain Visual & Bento Grid System',
-        link: 'https://www.notion.so/Catatan-Kuliah-IMK-Bento-UI',
-        notes: 'Gunakan hierarki tipografi yang tegas, kontras warna yang nyaman di mata, dan sudut membulat untuk kesan ramah.',
-      },
-      {
-        id: 'mat-4',
-        courseId: 'mk-4',
-        meeting: 7,
-        title: 'CAP Theorem & Konsistensi Eventual',
-        link: 'https://drive.google.com/file/d/cap-theorem-summary',
-        notes: 'Sistem terdistribusi hanya bisa menjamin maksimal 2 dari 3 aspek: Consistency, Availability, dan Partition Tolerance.',
-      },
+      { id: 'mat-1', courseId: 'mk-1', meeting: 6, title: 'State Management & Custom Hooks React', link: 'https://drive.google.com/drive/folders/react-hooks-slides', notes: 'Fokus pada useMemo, useCallback, serta sinkronisasi state dengan localStorage agar data tidak hilang saat refresh.' },
+      { id: 'mat-2', courseId: 'mk-2', meeting: 5, title: 'Heuristic Search & Algoritma A*', link: 'https://www.youtube.com/watch?v=ySN5Wnu88nE', notes: 'Rumus evaluasi f(n) = g(n) + h(n). Pastikan fungsi heuristik bersifat admissible agar solusi selalu optimal.' },
+      { id: 'mat-3', courseId: 'mk-3', meeting: 4, title: 'Prinsip Desain Visual & Bento Grid System', link: 'https://www.notion.so/Catatan-Kuliah-IMK-Bento-UI', notes: 'Gunakan hierarki tipografi yang tegas, kontras warna yang nyaman di mata, dan sudut membulat untuk kesan ramah.' },
+      { id: 'mat-4', courseId: 'mk-4', meeting: 7, title: 'CAP Theorem & Konsistensi Eventual', link: 'https://drive.google.com/file/d/cap-theorem-summary', notes: 'Sistem terdistribusi hanya bisa menjamin maksimal 2 dari 3 aspek: Consistency, Availability, dan Partition Tolerance.' },
     ];
 
-    // =========================================================================
-    // 4. UTILITAS PENYIMPANAN AMAN, AUDIO DING, & GOOGLE CALENDAR
-    // =========================================================================
     function safeLoadArray(key, fallback) {
       try {
         const raw = localStorage.getItem(key);
@@ -494,9 +289,7 @@
         const raw = localStorage.getItem(key);
         if (!raw) return fallback;
         const parsed = JSON.parse(raw);
-        return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
-          ? { ...fallback, ...parsed }
-          : fallback;
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? { ...fallback, ...parsed } : fallback;
       } catch (e) {
         return fallback;
       }
@@ -508,23 +301,19 @@
         if (!AudioCtx) return;
         const ctx = new AudioCtx();
         const now = ctx.currentTime;
-
         const playNote = (freq, startOffset, duration, peakGain) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, now + startOffset);
-
           gain.gain.setValueAtTime(0.0001, now + startOffset);
           gain.gain.exponentialRampToValueAtTime(peakGain, now + startOffset + 0.03);
           gain.gain.exponentialRampToValueAtTime(0.0001, now + startOffset + duration);
-
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(now + startOffset);
           osc.stop(now + startOffset + duration);
         };
-
         playNote(1046.5, 0, 0.55, 0.14);
         playNote(1318.5, 0.14, 0.75, 0.12);
       } catch (e) {}
@@ -544,13 +333,8 @@
           'Z'
         );
       };
-
       const start = startDate instanceof Date && !isNaN(startDate) ? startDate : new Date(Date.now() + 3600000);
-      const end =
-        endDate instanceof Date && !isNaN(endDate)
-          ? endDate
-          : new Date(start.getTime() + 60 * 60 * 1000);
-
+      const end = endDate instanceof Date && !isNaN(endDate) ? endDate : new Date(start.getTime() + 60 * 60 * 1000);
       const params = new URLSearchParams({
         action: 'TEMPLATE',
         text: title || 'Pengingat PangKuliah',
@@ -570,9 +354,7 @@
       const diff = (safeTarget - now.getDay() + 7) % 7;
       result.setDate(now.getDate() + diff);
       result.setHours(hh || 8, mm || 0, 0, 0);
-      if (result < now && diff === 0) {
-        result.setDate(result.getDate() + 7);
-      }
+      if (result < now && diff === 0) result.setDate(result.getDate() + 7);
       return result;
     }
 
@@ -593,7 +375,6 @@
       const diffMins = Math.round(diffMs / 60000);
       const timePart = target.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
       const datePart = target.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-
       if (diffMins < 0) return `Terlewat (${datePart}, ${timePart})`;
       if (diffMins < 60) return `${diffMins} menit lagi (${timePart})`;
       const diffHours = Math.round(diffMins / 60);
@@ -603,9 +384,6 @@
       return `${datePart}, ${timePart}`;
     }
 
-    // =========================================================================
-    // 5. KOMPONEN UTAMA APLIKASI PANGKULIAH
-    // =========================================================================
     function PangKuliahApp() {
       const [activeTab, setActiveTab] = useState('beranda');
       const [themeKey, setThemeKey] = useState(() => localStorage.getItem('pangkuliah_theme') || 'canva');
@@ -626,14 +404,11 @@
       );
       const alertedIdsRef = useRef(new Set());
 
-      // Default langsung ke Real-Time mengikuti jam & hari perangkat saat ini
       const [clockMode, setClockMode] = useState('realtime');
       const [nowTick, setNowTick] = useState(() => new Date());
 
       const initialRealDay = ALL_DAYS[new Date().getDay()];
-      const [selectedDay, setSelectedDay] = useState(() =>
-        DAYS.includes(initialRealDay) ? initialRealDay : 'Senin'
-      );
+      const [selectedDay, setSelectedDay] = useState(() => (DAYS.includes(initialRealDay) ? initialRealDay : 'Senin'));
       const [taskCourseFilter, setTaskCourseFilter] = useState('all');
       const [taskStatusFilter, setTaskStatusFilter] = useState('all');
       const [celebratingTaskId, setCelebratingTaskId] = useState(null);
@@ -650,52 +425,27 @@
       const [toastMsg, setToastMsg] = useState('');
       const [copiedText, setCopiedText] = useState('');
 
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_theme', themeKey);
-      }, [themeKey]);
+      useEffect(() => { localStorage.setItem('pangkuliah_theme', themeKey); }, [themeKey]);
+      useEffect(() => { localStorage.setItem('pangkuliah_profile', JSON.stringify(profile)); }, [profile]);
+      useEffect(() => { localStorage.setItem('pangkuliah_courses', JSON.stringify(courses)); }, [courses]);
+      useEffect(() => { localStorage.setItem('pangkuliah_schedules', JSON.stringify(schedules)); }, [schedules]);
+      useEffect(() => { localStorage.setItem('pangkuliah_tasks', JSON.stringify(tasks)); }, [tasks]);
+      useEffect(() => { localStorage.setItem('pangkuliah_materials', JSON.stringify(materials)); }, [materials]);
+      useEffect(() => { localStorage.setItem('pangkuliah_reminders', String(remindersEnabled)); }, [remindersEnabled]);
 
       useEffect(() => {
-        localStorage.setItem('pangkuliah_profile', JSON.stringify(profile));
-      }, [profile]);
-
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_courses', JSON.stringify(courses));
-      }, [courses]);
-
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_schedules', JSON.stringify(schedules));
-      }, [schedules]);
-
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_tasks', JSON.stringify(tasks));
-      }, [tasks]);
-
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_materials', JSON.stringify(materials));
-      }, [materials]);
-
-      useEffect(() => {
-        localStorage.setItem('pangkuliah_reminders', String(remindersEnabled));
-      }, [remindersEnabled]);
-
-      // Update jam real-time setiap 1 detik
-      useEffect(() => {
-        const timer = setInterval(() => {
-          setNowTick(new Date());
-        }, 1000);
+        const timer = setInterval(() => setNowTick(new Date()), 1000);
         return () => clearInterval(timer);
       }, []);
 
       const showToast = (msg) => {
         setToastMsg(msg);
-        setTimeout(() => {
-          setToastMsg((prev) => (prev === msg ? '' : prev));
-        }, 3200);
+        setTimeout(() => setToastMsg((prev) => (prev === msg ? '' : prev)), 3200);
       };
 
       const handleCopy = (text, label = 'Teks') => {
         if (!text) return;
-        navigator.clipboard?.writeText(text);
+        if (navigator.clipboard) navigator.clipboard.writeText(text);
         setCopiedText(text);
         showToast(`${label} berhasil disalin!`);
         setTimeout(() => setCopiedText(''), 2000);
@@ -704,12 +454,10 @@
       const handleEnableReminders = async () => {
         setRemindersEnabled(true);
         playGentleDing();
-
         if (typeof Notification === 'undefined') {
-          showToast('Suara pengingat aktif! Browser ini tidak mendukung pop-up sistem.');
+          showToast('Suara pengingat aktif!');
           return;
         }
-
         if (Notification.permission === 'granted') {
           setNotifPermission('granted');
           new Notification('PangKuliah — Pengingat Aktif! 🔔', {
@@ -718,7 +466,6 @@
           showToast('Pengingat & suara ding aktif!');
           return;
         }
-
         if (Notification.permission !== 'denied') {
           const perm = await Notification.requestPermission();
           setNotifPermission(perm);
@@ -726,12 +473,12 @@
             new Notification('PangKuliah — Notifikasi Diizinkan! 🎉', {
               body: 'Pengingat tugas & jadwal kuliah siap menemani harimu.',
             });
-            showToast('Izin notifikasi diberikan! Suara ding aktif.');
+            showToast('Izin notifikasi diberikan!');
           } else {
             showToast('Suara pengingat dalam aplikasi tetap aktif!');
           }
         } else {
-          showToast('Izin notifikasi diblokir browser, suara ding dalam aplikasi tetap aktif.');
+          showToast('Suara pengingat dalam aplikasi tetap aktif.');
         }
       };
 
@@ -747,7 +494,6 @@
 
       const getPastel = (colorKey) => PASTEL_THEMES[colorKey] || PASTEL_THEMES.lavender;
 
-      // Informasi Hari & Jam Real-Time dari Perangkat
       const realDayIdx = nowTick.getDay();
       const realDayName = ALL_DAYS[realDayIdx];
       const formattedRealDate = nowTick.toLocaleDateString('id-ID', {
@@ -762,12 +508,10 @@
         second: '2-digit',
       });
 
-      // Kalkulasi Hero Card "Now Playing" (Real-Time Akurat + Mode Simulasi)
       const heroSessionInfo = useMemo(() => {
         const list = schedules || [];
         if (list.length === 0) return null;
 
-        // Mode Simulasi untuk uji coba tampilan
         if (clockMode === 'sim_active' || clockMode === 'sim_upcoming') {
           const targetItem = list[0];
           const [sh, sm] = (targetItem.startTime || '08:00').split(':').map(Number);
@@ -805,7 +549,6 @@
           }
         }
 
-        // MODE REAL-TIME: Cek jadwal hari ini terlebih dahulu
         const currentMins = nowTick.getHours() * 60 + nowTick.getMinutes();
         const currentSecs = nowTick.getSeconds();
 
@@ -855,8 +598,6 @@
           }
         }
 
-        // Jika hari ini tidak ada kelas (misal Minggu) atau semua kelas hari ini sudah selesai,
-        // cari kelas berikutnya secara real-time di hari-hari mendatang (1..7 hari ke depan)
         for (let offset = 1; offset <= 7; offset++) {
           const nextDayName = ALL_DAYS[(realDayIdx + offset) % 7];
           const nextDayScheds = list
@@ -884,7 +625,6 @@
             };
           }
         }
-
         return null;
       }, [schedules, courses, clockMode, nowTick, realDayName, realDayIdx]);
 
@@ -904,11 +644,6 @@
         if (!alertedIdsRef.current.has(firstUrgent.id)) {
           alertedIdsRef.current.add(firstUrgent.id);
           playGentleDing();
-          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-            new Notification(`Pengingat Tugas: ${firstUrgent.title}`, {
-              body: `Tenggat ${formatDeadlineLabel(firstUrgent.deadline)}`,
-            });
-          }
         }
       }, [urgentTasks, remindersEnabled]);
 
@@ -1011,7 +746,6 @@
         { id: 'pengaturan', label: 'Pengaturan', icon: Settings },
       ];
 
-      // Jadwal kuliah khusus untuk hari ini secara real-time (tanpa memalsukan hari lain)
       const todaySchedules = useMemo(() => {
         return (schedules || [])
           .filter((s) => s.day === realDayName)
@@ -1030,7 +764,6 @@
           )}
 
           <div className="flex max-w-[1440px] mx-auto">
-            {/* SIDEBAR DESKTOP */}
             <aside className={`hidden lg:flex flex-col w-72 shrink-0 min-h-screen sticky top-0 border-r p-6 justify-between ${theme.sidebarBg}`}>
               <div>
                 <div className="flex items-center justify-between mb-8">
@@ -1042,9 +775,7 @@
                       <h1 className="text-xl font-extrabold tracking-tight leading-none">
                         Pang<span className="text-violet-500">Kuliah</span>
                       </h1>
-                      <p className={`text-xs mt-1 font-medium ${theme.textSecondary}`}>
-                        Teman Santai Kampusmu
-                      </p>
+                      <p className={`text-xs mt-1 font-medium ${theme.textSecondary}`}>Teman Santai Kampusmu</p>
                     </div>
                   </div>
                 </div>
@@ -1066,15 +797,7 @@
                           <span>{item.label}</span>
                         </span>
                         {item.badge > 0 && (
-                          <span
-                            className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                              isActive
-                                ? 'bg-white/25 text-current'
-                                : theme.isDark
-                                ? 'bg-zinc-800 text-zinc-200'
-                                : 'bg-zinc-200/80 text-zinc-700'
-                            }`}
-                          >
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${isActive ? 'bg-white/25 text-current' : theme.isDark ? 'bg-zinc-800 text-zinc-200' : 'bg-zinc-200/80 text-zinc-700'}`}>
                             {item.badge}
                           </span>
                         )}
@@ -1095,11 +818,7 @@
                   </span>
                   <span className="flex items-center gap-1">
                     {theme.swatchPreview.map((hex, i) => (
-                      <span
-                        key={i}
-                        className="w-3 h-3 rounded-full border border-zinc-400/50"
-                        style={{ backgroundColor: hex }}
-                      />
+                      <span key={i} className="w-3 h-3 rounded-full border border-zinc-400/50" style={{ backgroundColor: hex }} />
                     ))}
                   </span>
                 </button>
@@ -1121,7 +840,6 @@
               </div>
             </aside>
 
-            {/* KONTEN UTAMA */}
             <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 pt-5 pb-28 lg:pb-12">
               <header className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-2.5 lg:hidden">
@@ -1143,16 +861,13 @@
                 </div>
 
                 <div className="flex items-center gap-2 ml-auto">
-                  <div
-                    className={`hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-extrabold ${theme.cardBg} ${theme.cardBorder}`}
-                  >
+                  <div className={`hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-extrabold ${theme.cardBg} ${theme.cardBorder}`}>
                     <Clock size={14} className="text-emerald-500" />
                     <span>{realDayName}, {formattedRealClock}</span>
                   </div>
 
                   <button
                     onClick={cycleTheme}
-                    title="Ganti Tema Tampilan"
                     className={`flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-bold transition ${theme.cardBg} ${theme.cardBorder}`}
                   >
                     <Palette size={15} className="text-violet-500" />
@@ -1163,16 +878,12 @@
                     onClick={handleEnableReminders}
                     className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition shadow-sm ${
                       notifPermission === 'granted' && remindersEnabled
-                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-500/15 text-emerald-600 border border-emerald-500/30'
                         : theme.accentBg
                     }`}
                   >
                     <BellRing size={15} />
-                    <span>
-                      {notifPermission === 'granted' && remindersEnabled
-                        ? 'Pengingat Aktif'
-                        : 'Aktifkan Pengingat'}
-                    </span>
+                    <span>{notifPermission === 'granted' && remindersEnabled ? 'Pengingat Aktif' : 'Aktifkan Pengingat'}</span>
                   </button>
                 </div>
               </header>
@@ -1193,31 +904,23 @@
                       <BellRing size={19} />
                     </div>
                     <div>
-                      <p className="text-xs font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                        Pengingat Tenggat Terdekat
-                      </p>
+                      <p className="text-xs font-extrabold uppercase tracking-wider text-amber-600">Pengingat Tenggat Terdekat</p>
                       <p className="text-sm font-bold">
-                        {urgentTasks[0].title}{' '}
-                        <span className="font-normal opacity-80">
-                          — {formatDeadlineLabel(urgentTasks[0].deadline)}
-                        </span>
+                        {urgentTasks[0].title} <span className="font-normal opacity-80">— {formatDeadlineLabel(urgentTasks[0].deadline)}</span>
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => {
-                        playGentleDing();
-                        showToast('Ting! Suara pengingat berbunyi.');
-                      }}
-                      className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/80 dark:bg-zinc-800 text-zinc-900 dark:text-white border border-zinc-300/60 dark:border-zinc-700 flex items-center gap-1.5"
+                      onClick={() => { playGentleDing(); showToast('Ting! Suara pengingat berbunyi.'); }}
+                      className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/80 text-zinc-900 border border-zinc-300/60 flex items-center gap-1.5"
                     >
                       <Volume2 size={14} />
                       <span>Tes Ding</span>
                     </button>
                     <button
                       onClick={() => setActiveTab('tugas')}
-                      className="px-4 py-1.5 rounded-full text-xs font-bold bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                      className="px-4 py-1.5 rounded-full text-xs font-bold bg-zinc-900 text-white"
                     >
                       Lihat Tugas
                     </button>
@@ -1225,7 +928,6 @@
                 </div>
               )}
 
-              {/* TAB 1: BERANDA */}
               {activeTab === 'beranda' && (
                 <div className="space-y-6">
                   {heroSessionInfo && (
@@ -1245,15 +947,12 @@
                                 : 'KELAS BERIKUTNYA'}
                             </span>
                             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-zinc-200">
-                              {heroSessionInfo.dayLabel} • {heroSessionInfo.schedule.startTime} –{' '}
-                              {heroSessionInfo.schedule.endTime}
+                              {heroSessionInfo.dayLabel} • {heroSessionInfo.schedule.startTime} – {heroSessionInfo.schedule.endTime}
                             </span>
                           </div>
 
                           <div>
-                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                              {heroSessionInfo.course.name}
-                            </h3>
+                            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">{heroSessionInfo.course.name}</h3>
                             <p className="text-sm text-zinc-300 mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
                               <span>{heroSessionInfo.course.lecturer}</span>
                               <span className="inline-flex items-center gap-1 text-[#1DB954] font-semibold">
@@ -1265,11 +964,7 @@
 
                           <div className="pt-1 space-y-1.5">
                             <div className="flex items-center justify-between text-xs font-semibold text-zinc-300">
-                              <span>
-                                {heroSessionInfo.status === 'active'
-                                  ? 'Progres Sesi Kuliah'
-                                  : 'Hitung Mundur Kelas'}
-                              </span>
+                              <span>{heroSessionInfo.status === 'active' ? 'Progres Sesi Kuliah' : 'Hitung Mundur Kelas'}</span>
                               <span className="text-[#1DB954] font-bold">{heroSessionInfo.countdown}</span>
                             </div>
                             <div className="w-full h-2.5 rounded-full bg-zinc-800 overflow-hidden">
@@ -1292,9 +987,7 @@
                                 key={m.id}
                                 onClick={() => setClockMode(m.id)}
                                 className={`px-3 py-1.5 rounded-full font-bold transition ${
-                                  clockMode === m.id
-                                    ? 'bg-[#1DB954] text-black'
-                                    : 'text-zinc-400 hover:text-white'
+                                  clockMode === m.id ? 'bg-[#1DB954] text-black' : 'text-zinc-400 hover:text-white'
                                 }`}
                               >
                                 {m.label}
@@ -1330,17 +1023,10 @@
                     <div className={`lg:col-span-7 rounded-3xl p-6 ${theme.cardBg} ${theme.cardBorder}`}>
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-extrabold">
-                            Jadwal Kuliah Hari Ini ({realDayName})
-                          </h3>
-                          <p className={`text-xs ${theme.textSecondary}`}>
-                            Menampilkan jadwal sesuai hari perangkatmu secara real-time
-                          </p>
+                          <h3 className="text-lg font-extrabold">Jadwal Kuliah Hari Ini ({realDayName})</h3>
+                          <p className={`text-xs ${theme.textSecondary}`}>Menampilkan jadwal sesuai hari perangkatmu secara real-time</p>
                         </div>
-                        <button
-                          onClick={() => setActiveTab('jadwal')}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold ${theme.accentSoft}`}
-                        >
+                        <button onClick={() => setActiveTab('jadwal')} className={`px-3.5 py-1.5 rounded-full text-xs font-bold ${theme.accentSoft}`}>
                           Lihat Mingguan
                         </button>
                       </div>
@@ -1361,11 +1047,7 @@
                                 <div className="flex items-start justify-between gap-3">
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2">
-                                      <span
-                                        className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${
-                                          theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                                        }`}
-                                      >
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                                         {course.code} • {course.sks} SKS
                                       </span>
                                       <span className={`text-xs font-bold ${theme.textSecondary}`}>
@@ -1378,8 +1060,7 @@
                                       <span>{sch.room}</span>
                                     </p>
                                   </div>
-
-                                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/80 dark:bg-zinc-900/80 shadow-sm">
+                                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-white/80 text-zinc-900 shadow-sm">
                                     Detail
                                   </span>
                                 </div>
@@ -1389,9 +1070,7 @@
                         </div>
                       ) : (
                         <div className={`p-8 rounded-3xl text-center space-y-2.5 ${theme.subCardBg}`}>
-                          <p className="text-base font-extrabold">
-                            Tidak ada jadwal kuliah hari {realDayName} 🎉
-                          </p>
+                          <p className="text-base font-extrabold">Tidak ada jadwal kuliah hari {realDayName} 🎉</p>
                           <p className={`text-xs max-w-md mx-auto ${theme.textSecondary}`}>
                             Hari ini kosong kelas! Waktunya istirahat, review catatan, atau cicil tugas kuliahmu.
                           </p>
@@ -1438,57 +1117,33 @@
                             const gcalUrl = buildGoogleCalendarUrl({
                               title: `[Tugas] ${task.title}`,
                               startDate: new Date(task.deadline),
-                              details: `Mata Kuliah: ${course.name} (${course.code})
-Pengingat PangKuliah`,
+                              details: `Mata Kuliah: ${course.name} (${course.code}) - Pengingat PangKuliah`,
                             });
 
                             return (
-                              <div
-                                key={task.id}
-                                className={`relative p-3.5 rounded-2xl border transition ${theme.subCardBg} ${theme.cardBorder}`}
-                              >
+                              <div key={task.id} className={`relative p-3.5 rounded-2xl border transition ${theme.subCardBg} ${theme.cardBorder}`}>
                                 {celebratingTaskId === task.id && (
                                   <span className="absolute -top-2 right-3 text-xs font-extrabold text-emerald-500 animate-sparkle">
                                     Mantap! +1 Selesai ✨
                                   </span>
                                 )}
                                 <div className="flex items-start gap-3">
-                                  <button
-                                    onClick={() => toggleTaskComplete(task.id)}
-                                    className="mt-0.5 text-violet-500 hover:scale-110 transition shrink-0"
-                                  >
-                                    {task.completed ? (
-                                      <CheckCircle2 size={20} className="text-emerald-500" />
-                                    ) : (
-                                      <Circle size={20} />
-                                    )}
+                                  <button onClick={() => toggleTaskComplete(task.id)} className="mt-0.5 text-violet-500 hover:scale-110 transition shrink-0">
+                                    {task.completed ? <CheckCircle2 size={20} className="text-emerald-500" /> : <Circle size={20} />}
                                   </button>
                                   <div className="flex-1 min-w-0">
-                                    <p
-                                      className={`text-sm font-bold leading-snug ${
-                                        task.completed ? 'line-through opacity-50' : ''
-                                      }`}
-                                    >
+                                    <p className={`text-sm font-bold leading-snug ${task.completed ? 'line-through opacity-50' : ''}`}>
                                       {task.title}
                                     </p>
                                     <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                                      <span
-                                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-                                          theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                                        }`}
-                                      >
+                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                                         {course.name}
                                       </span>
                                       <span className={`text-[11px] font-medium ${theme.textSecondary}`}>
                                         {formatDeadlineLabel(task.deadline)}
                                       </span>
                                     </div>
-                                    <a
-                                      href={gcalUrl}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-flex items-center gap-1 mt-2 text-[11px] font-bold text-violet-500 hover:underline"
-                                    >
+                                    <a href={gcalUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 mt-2 text-[11px] font-bold text-violet-500 hover:underline">
                                       <CalendarPlus size={12} />
                                       <span>Set Alarm di Google Calendar</span>
                                     </a>
@@ -1500,10 +1155,7 @@ Pengingat PangKuliah`,
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => setActiveTab('tugas')}
-                        className={`w-full mt-5 py-2.5 rounded-full text-xs font-bold transition ${theme.accentBg}`}
-                      >
+                      <button onClick={() => setActiveTab('tugas')} className={`w-full mt-5 py-2.5 rounded-full text-xs font-bold transition ${theme.accentBg}`}>
                         Kelola Semua Tugas & Pengingat
                       </button>
                     </div>
@@ -1511,7 +1163,6 @@ Pengingat PangKuliah`,
                 </div>
               )}
 
-              {/* TAB 2: JADWAL KULIAH */}
               {activeTab === 'jadwal' && (
                 <div className="space-y-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1523,19 +1174,13 @@ Pengingat PangKuliah`,
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => {
-                          setEditingCourse(null);
-                          setCourseModalOpen(true);
-                        }}
+                        onClick={() => { setEditingCourse(null); setCourseModalOpen(true); }}
                         className={`px-4 py-2.5 rounded-full text-xs font-bold border transition ${theme.cardBg} ${theme.cardBorder}`}
                       >
                         + Mata Kuliah
                       </button>
                       <button
-                        onClick={() => {
-                          setEditingSchedule(null);
-                          setScheduleModalOpen(true);
-                        }}
+                        onClick={() => { setEditingSchedule(null); setScheduleModalOpen(true); }}
                         className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition ${theme.accentBg}`}
                       >
                         <Plus size={16} />
@@ -1558,16 +1203,8 @@ Pengingat PangKuliah`,
                           }`}
                         >
                           <span>{day}</span>
-                          {isToday && (
-                            <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-500 text-white">
-                              Hari Ini
-                            </span>
-                          )}
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] ${
-                              active ? 'bg-white/25' : 'bg-zinc-500/15'
-                            }`}
-                          >
+                          {isToday && <span className="px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-500 text-white">Hari Ini</span>}
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] ${active ? 'bg-white/25' : 'bg-zinc-500/15'}`}>
                             {count}
                           </span>
                         </button>
@@ -1591,30 +1228,16 @@ Pengingat PangKuliah`,
                           title: `Kuliah: ${course.name} (${course.code})`,
                           startDate: nextDate,
                           endDate,
-                          details: `Dosen: ${course.lecturer}
-SKS: ${course.sks}
-Link Kelas: ${sch.link || '-'}`,
+                          details: `Dosen: ${course.lecturer} | SKS: ${course.sks} | Link: ${sch.link || '-'}`,
                           location: sch.room,
                         });
 
                         return (
-                          <div
-                            key={sch.id}
-                            className={`rounded-3xl p-5 border transition ${
-                              theme.isDark ? pastel.darkCard : pastel.lightCard
-                            }`}
-                          >
+                          <div key={sch.id} className={`rounded-3xl p-5 border transition ${theme.isDark ? pastel.darkCard : pastel.lightCard}`}>
                             <div className="flex items-start justify-between gap-3">
-                              <div
-                                onClick={() => setDetailSchedule(sch)}
-                                className="cursor-pointer space-y-1.5 flex-1"
-                              >
+                              <div onClick={() => setDetailSchedule(sch)} className="cursor-pointer space-y-1.5 flex-1">
                                 <div className="flex items-center gap-2">
-                                  <span
-                                    className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${
-                                      theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                                    }`}
-                                  >
+                                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                                     {course.code} • {course.sks} SKS
                                   </span>
                                   <span className="text-xs font-extrabold flex items-center gap-1">
@@ -1632,41 +1255,25 @@ Link Kelas: ${sch.link || '-'}`,
 
                               <div className="flex items-center gap-1.5">
                                 <button
-                                  onClick={() => {
-                                    setEditingSchedule(sch);
-                                    setScheduleModalOpen(true);
-                                  }}
-                                  className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80 hover:scale-105 transition"
-                                  title="Edit Jadwal"
+                                  onClick={() => { setEditingSchedule(sch); setScheduleModalOpen(true); }}
+                                  className="p-2 rounded-full bg-white/80 text-zinc-900 hover:scale-105 transition"
                                 >
                                   <Edit3 size={14} />
                                 </button>
                                 <button
-                                  onClick={() => {
-                                    setSchedules((prev) => prev.filter((item) => item.id !== sch.id));
-                                    showToast('Jadwal dihapus.');
-                                  }}
-                                  className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80 text-rose-500 hover:scale-105 transition"
-                                  title="Hapus Jadwal"
+                                  onClick={() => { setSchedules((prev) => prev.filter((item) => item.id !== sch.id)); showToast('Jadwal dihapus.'); }}
+                                  className="p-2 rounded-full bg-white/80 text-rose-500 hover:scale-105 transition"
                                 >
                                   <Trash2 size={14} />
                                 </button>
                               </div>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-black/5 dark:border-white/10">
-                              <button
-                                onClick={() => setDetailSchedule(sch)}
-                                className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/90 dark:bg-zinc-900/90"
-                              >
+                            <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-black/5">
+                              <button onClick={() => setDetailSchedule(sch)} className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/90 text-zinc-900">
                                 Detail Matkul
                               </button>
-                              <a
-                                href={gcalUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-violet-600 text-white inline-flex items-center gap-1.5"
-                              >
+                              <a href={gcalUrl} target="_blank" rel="noreferrer" className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-violet-600 text-white inline-flex items-center gap-1.5">
                                 <CalendarPlus size={13} />
                                 <span>Set Alarm di Google Calendar</span>
                               </a>
@@ -1679,28 +1286,20 @@ Link Kelas: ${sch.link || '-'}`,
                   {(schedules || []).filter((s) => s.day === selectedDay).length === 0 && (
                     <div className={`rounded-3xl p-10 text-center ${theme.cardBg} ${theme.cardBorder}`}>
                       <p className="text-base font-extrabold">Yeay, hari {selectedDay} kosong jadwal! 🎉</p>
-                      <p className={`text-xs mt-1 ${theme.textSecondary}`}>
-                        Cocok buat ngerjain tugas atau review materi kuliah.
-                      </p>
+                      <p className={`text-xs mt-1 ${theme.textSecondary}`}>Cocok buat ngerjain tugas atau review materi kuliah.</p>
                     </div>
                   )}
                 </div>
               )}
 
-              {/* TAB 3: TUGAS */}
               {activeTab === 'tugas' && (
                 <div className="space-y-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <h3 className="text-2xl font-extrabold">Daftar Tugas & Pengingat</h3>
-                      <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>
-                        Otomatis diurutkan berdasarkan tenggat terdekat
-                      </p>
+                      <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>Otomatis diurutkan berdasarkan tenggat terdekat</p>
                     </div>
-                    <button
-                      onClick={handleEnableReminders}
-                      className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${theme.accentSoft}`}
-                    >
+                    <button onClick={handleEnableReminders} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${theme.accentSoft}`}>
                       <BellRing size={15} />
                       <span>Aktifkan Pengingat & Suara</span>
                     </button>
@@ -1720,9 +1319,7 @@ Link Kelas: ${sch.link || '-'}`,
                     <div className="flex items-center gap-2 overflow-x-auto pb-1">
                       <button
                         onClick={() => setTaskCourseFilter('all')}
-                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 ${
-                          taskCourseFilter === 'all' ? theme.navActive : `${theme.cardBg} ${theme.cardBorder}`
-                        }`}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 ${taskCourseFilter === 'all' ? theme.navActive : `${theme.cardBg} ${theme.cardBorder}`}`}
                       >
                         Semua Matkul
                       </button>
@@ -1730,9 +1327,7 @@ Link Kelas: ${sch.link || '-'}`,
                         <button
                           key={c.id}
                           onClick={() => setTaskCourseFilter(c.id)}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 ${
-                            taskCourseFilter === c.id ? theme.navActive : `${theme.cardBg} ${theme.cardBorder}`
-                          }`}
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 ${taskCourseFilter === c.id ? theme.navActive : `${theme.cardBg} ${theme.cardBorder}`}`}
                         >
                           {c.name}
                         </button>
@@ -1748,9 +1343,7 @@ Link Kelas: ${sch.link || '-'}`,
                         <button
                           key={st.id}
                           onClick={() => setTaskStatusFilter(st.id)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            taskStatusFilter === st.id ? theme.accentSoft : theme.textSecondary
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-bold ${taskStatusFilter === st.id ? theme.accentSoft : theme.textSecondary}`}
                         >
                           {st.label}
                         </button>
@@ -1765,16 +1358,11 @@ Link Kelas: ${sch.link || '-'}`,
                       const gcalUrl = buildGoogleCalendarUrl({
                         title: `[Tugas] ${task.title}`,
                         startDate: new Date(task.deadline),
-                        details: `Mata Kuliah: ${course.name} (${course.code})
-Dosen: ${course.lecturer}
-Pengingat: ${task.reminder}`,
+                        details: `Mata Kuliah: ${course.name} (${course.code}) - Dosen: ${course.lecturer}`,
                       });
 
                       return (
-                        <div
-                          key={task.id}
-                          className={`relative rounded-3xl p-4 sm:p-5 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${theme.cardBg} ${theme.cardBorder}`}
-                        >
+                        <div key={task.id} className={`relative rounded-3xl p-4 sm:p-5 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${theme.cardBg} ${theme.cardBorder}`}>
                           {celebratingTaskId === task.id && (
                             <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-emerald-500 text-white text-xs font-extrabold shadow animate-sparkle">
                               Keren! Tugas selesai 🎉
@@ -1782,30 +1370,15 @@ Pengingat: ${task.reminder}`,
                           )}
 
                           <div className="flex items-start gap-3.5">
-                            <button
-                              onClick={() => toggleTaskComplete(task.id)}
-                              className="mt-0.5 text-violet-500 hover:scale-110 transition shrink-0"
-                            >
-                              {task.completed ? (
-                                <CheckCircle2 size={22} className="text-emerald-500" />
-                              ) : (
-                                <Circle size={22} />
-                              )}
+                            <button onClick={() => toggleTaskComplete(task.id)} className="mt-0.5 text-violet-500 hover:scale-110 transition shrink-0">
+                              {task.completed ? <CheckCircle2 size={22} className="text-emerald-500" /> : <Circle size={22} />}
                             </button>
                             <div>
-                              <h4
-                                className={`text-base font-extrabold ${
-                                  task.completed ? 'line-through opacity-50' : ''
-                                }`}
-                              >
+                              <h4 className={`text-base font-extrabold ${task.completed ? 'line-through opacity-50' : ''}`}>
                                 {task.title}
                               </h4>
                               <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                                <span
-                                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                                    theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                                  }`}
-                                >
+                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                                   {course.name}
                                 </span>
                                 <span className={`text-xs font-semibold flex items-center gap-1 ${theme.textSecondary}`}>
@@ -1821,22 +1394,13 @@ Pengingat: ${task.reminder}`,
                           </div>
 
                           <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                            <a
-                              href={gcalUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className={`px-3.5 py-2 rounded-full text-xs font-bold inline-flex items-center gap-1.5 transition ${theme.accentSoft}`}
-                            >
+                            <a href={gcalUrl} target="_blank" rel="noreferrer" className={`px-3.5 py-2 rounded-full text-xs font-bold inline-flex items-center gap-1.5 transition ${theme.accentSoft}`}>
                               <CalendarPlus size={14} />
                               <span>Set Alarm di Google Calendar</span>
                             </a>
                             <button
-                              onClick={() => {
-                                setTasks((prev) => prev.filter((item) => item.id !== task.id));
-                                showToast('Tugas dihapus.');
-                              }}
+                              onClick={() => { setTasks((prev) => prev.filter((item) => item.id !== task.id)); showToast('Tugas dihapus.'); }}
                               className="p-2 rounded-full text-rose-500 hover:bg-rose-500/10 transition"
-                              title="Hapus Tugas"
                             >
                               <Trash2 size={16} />
                             </button>
@@ -1844,34 +1408,19 @@ Pengingat: ${task.reminder}`,
                         </div>
                       );
                     })}
-
-                    {filteredTasks.length === 0 && (
-                      <div className={`rounded-3xl p-10 text-center ${theme.cardBg} ${theme.cardBorder}`}>
-                        <p className="text-base font-extrabold">Tidak ada tugas di filter ini ✨</p>
-                        <p className={`text-xs mt-1 ${theme.textSecondary}`}>
-                          Gunakan form di atas untuk mencatat tugas kuliahmu berikutnya.
-                        </p>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
 
-              {/* TAB 4: MATERI KULIAH */}
               {activeTab === 'materi' && (
                 <div className="space-y-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <h3 className="text-2xl font-extrabold">Materi Kuliah</h3>
-                      <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>
-                        Folder otomatis per mata kuliah & pencarian catatan instan
-                      </p>
+                      <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>Folder otomatis per mata kuliah & pencarian catatan instan</p>
                     </div>
                     <button
-                      onClick={() => {
-                        setEditingMaterial(null);
-                        setMaterialModalOpen(true);
-                      }}
+                      onClick={() => { setEditingMaterial(null); setMaterialModalOpen(true); }}
                       className={`px-4 py-2.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${theme.accentBg}`}
                     >
                       <Plus size={16} />
@@ -1880,10 +1429,7 @@ Pengingat: ${task.reminder}`,
                   </div>
 
                   <div className="relative">
-                    <Search
-                      size={18}
-                      className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme.textSecondary}`}
-                    />
+                    <Search size={18} className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme.textSecondary}`} />
                     <input
                       type="text"
                       value={materialSearch}
@@ -1896,11 +1442,7 @@ Pengingat: ${task.reminder}`,
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                     <button
                       onClick={() => setSelectedFolderCourseId('all')}
-                      className={`p-4 rounded-3xl text-left border transition ${
-                        selectedFolderCourseId === 'all'
-                          ? theme.navActive
-                          : `${theme.cardBg} ${theme.cardBorder}`
-                      }`}
+                      className={`p-4 rounded-3xl text-left border transition ${selectedFolderCourseId === 'all' ? theme.navActive : `${theme.cardBg} ${theme.cardBorder}`}`}
                     >
                       <FolderOpen size={20} className="mb-2" />
                       <p className="text-xs font-extrabold truncate">Semua Folder</p>
@@ -1915,9 +1457,7 @@ Pengingat: ${task.reminder}`,
                         <button
                           key={course.id}
                           onClick={() => setSelectedFolderCourseId(course.id)}
-                          className={`p-4 rounded-3xl text-left border transition ${
-                            active ? 'ring-2 ring-violet-500 scale-[1.02]' : ''
-                          } ${theme.isDark ? pastel.darkCard : pastel.lightCard}`}
+                          className={`p-4 rounded-3xl text-left border transition ${active ? 'ring-2 ring-violet-500 scale-[1.02]' : ''} ${theme.isDark ? pastel.darkCard : pastel.lightCard}`}
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className={`w-3 h-3 rounded-full ${pastel.dot}`} />
@@ -1938,39 +1478,21 @@ Pengingat: ${task.reminder}`,
                       const PlatformIcon = platform.icon;
 
                       return (
-                        <div
-                          key={mat.id}
-                          className={`rounded-3xl p-5 flex flex-col justify-between ${theme.cardBg} ${theme.cardBorder}`}
-                        >
+                        <div key={mat.id} className={`rounded-3xl p-5 flex flex-col justify-between ${theme.cardBg} ${theme.cardBorder}`}>
                           <div>
                             <div className="flex items-center justify-between gap-2 mb-2.5">
                               <div className="flex items-center gap-2">
-                                <span
-                                  className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${
-                                    theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                                  }`}
-                                >
+                                <span className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                                   {course.name}
                                 </span>
-                                <span className={`text-xs font-bold ${theme.textSecondary}`}>
-                                  Pertemuan {mat.meeting}
-                                </span>
+                                <span className={`text-xs font-bold ${theme.textSecondary}`}>Pertemuan {mat.meeting}</span>
                               </div>
                               <div className="flex items-center gap-1">
-                                <button
-                                  onClick={() => {
-                                    setEditingMaterial(mat);
-                                    setMaterialModalOpen(true);
-                                  }}
-                                  className="p-1.5 rounded-full hover:bg-zinc-500/10"
-                                >
+                                <button onClick={() => { setEditingMaterial(mat); setMaterialModalOpen(true); }} className="p-1.5 rounded-full hover:bg-zinc-500/10">
                                   <Edit3 size={14} />
                                 </button>
                                 <button
-                                  onClick={() => {
-                                    setMaterials((prev) => prev.filter((item) => item.id !== mat.id));
-                                    showToast('Materi dihapus.');
-                                  }}
+                                  onClick={() => { setMaterials((prev) => prev.filter((item) => item.id !== mat.id)); showToast('Materi dihapus.'); }}
                                   className="p-1.5 rounded-full text-rose-500 hover:bg-rose-500/10"
                                 >
                                   <Trash2 size={14} />
@@ -1988,21 +1510,12 @@ Pengingat: ${task.reminder}`,
 
                           {mat.link && (
                             <div className="flex items-center gap-2 mt-4 pt-3 border-t border-zinc-500/10">
-                              <a
-                                href={mat.link}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={`flex-1 py-2 px-3.5 rounded-full text-xs font-bold inline-flex items-center justify-center gap-1.5 ${theme.accentBg}`}
-                              >
+                              <a href={mat.link} target="_blank" rel="noreferrer" className={`flex-1 py-2 px-3.5 rounded-full text-xs font-bold inline-flex items-center justify-center gap-1.5 ${theme.accentBg}`}>
                                 <PlatformIcon size={14} />
                                 <span>Buka {platform.label}</span>
                                 <ExternalLink size={12} />
                               </a>
-                              <button
-                                onClick={() => handleCopy(mat.link, 'Link materi')}
-                                className={`p-2 rounded-full border ${theme.cardBorder}`}
-                                title="Salin Link Materi"
-                              >
+                              <button onClick={() => handleCopy(mat.link, 'Link materi')} className={`p-2 rounded-full border ${theme.cardBorder}`}>
                                 {copiedText === mat.link ? <Check size={15} className="text-emerald-500" /> : <Copy size={15} />}
                               </button>
                             </div>
@@ -2014,29 +1527,22 @@ Pengingat: ${task.reminder}`,
                 </div>
               )}
 
-              {/* TAB 5: AKUN MAHASISWA */}
               {activeTab === 'akun' && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-2xl font-extrabold">Akun Mahasiswa</h3>
-                    <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>
-                      Identitas akademikmu yang otomatis muncul di sapaan Beranda
-                    </p>
+                    <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>Identitas akademikmu yang otomatis muncul di sapaan Beranda</p>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     <div className="lg:col-span-5 space-y-5">
                       <div className="relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br from-violet-600 via-indigo-600 to-zinc-900 text-white shadow-xl">
                         <div className="flex items-center justify-between mb-6">
-                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-white/20 tracking-wider uppercase">
-                            PangKuliah ID
-                          </span>
+                          <span className="px-3 py-1 rounded-full text-[11px] font-extrabold bg-white/20 tracking-wider uppercase">PangKuliah ID</span>
                           <GraduationCap size={24} className="text-emerald-300" />
                         </div>
                         <h4 className="text-2xl font-extrabold">{profile.name || 'Nama Mahasiswa'}</h4>
-                        <p className="text-xs text-violet-200 font-semibold mt-0.5">
-                          NIM: {profile.nim || '-'}
-                        </p>
+                        <p className="text-xs text-violet-200 font-semibold mt-0.5">NIM: {profile.nim || '-'}</p>
                         <div className="mt-6 pt-4 border-t border-white/15 flex items-center justify-between text-xs">
                           <div>
                             <p className="text-violet-200">Program Studi</p>
@@ -2044,9 +1550,7 @@ Pengingat: ${task.reminder}`,
                           </div>
                           <div className="text-right">
                             <p className="text-violet-200">Semester</p>
-                            <p className="font-extrabold text-emerald-300 text-base">
-                              Semester {profile.semester || '1'}
-                            </p>
+                            <p className="font-extrabold text-emerald-300 text-base">Semester {profile.semester || '1'}</p>
                           </div>
                         </div>
                         <p className="text-[11px] text-violet-200 mt-3">{profile.university || '-'}</p>
@@ -2061,16 +1565,12 @@ Pengingat: ${task.reminder}`,
                           <div className={`p-3.5 rounded-2xl ${theme.subCardBg}`}>
                             <p className={`text-xs ${theme.textSecondary}`}>Total Beban Studi</p>
                             <p className="text-xl font-extrabold mt-0.5">{academicStats.totalSks} SKS</p>
-                            <p className="text-[11px] text-violet-500 font-bold">
-                              {academicStats.totalCourses} Mata Kuliah
-                            </p>
+                            <p className="text-[11px] text-violet-500 font-bold">{academicStats.totalCourses} Mata Kuliah</p>
                           </div>
                           <div className={`p-3.5 rounded-2xl ${theme.subCardBg}`}>
                             <p className={`text-xs ${theme.textSecondary}`}>Progres Tugas</p>
                             <p className="text-xl font-extrabold mt-0.5">{academicStats.completionRate}%</p>
-                            <p className="text-[11px] text-emerald-500 font-bold">
-                              {academicStats.doneTasks}/{academicStats.totalTasks} Selesai
-                            </p>
+                            <p className="text-[11px] text-emerald-500 font-bold">{academicStats.doneTasks}/{academicStats.totalTasks} Selesai</p>
                           </div>
                           <div className={`p-3.5 rounded-2xl ${theme.subCardBg}`}>
                             <p className={`text-xs ${theme.textSecondary}`}>Arsip Materi</p>
@@ -2088,71 +1588,34 @@ Pengingat: ${task.reminder}`,
 
                     <div className={`lg:col-span-7 rounded-3xl p-6 ${theme.cardBg} ${theme.cardBorder}`}>
                       <h4 className="text-lg font-extrabold mb-4">Edit Data Mahasiswa</h4>
-                      <form
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          showToast('Profil mahasiswa berhasil disimpan!');
-                        }}
-                        className="space-y-4"
-                      >
+                      <form onSubmit={(e) => { e.preventDefault(); showToast('Profil mahasiswa berhasil disimpan!'); }} className="space-y-4">
                         <div>
                           <label className="block text-xs font-bold mb-1.5">Nama Lengkap</label>
-                          <input
-                            type="text"
-                            value={profile.name}
-                            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                            className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-                            required
-                          />
+                          <input type="text" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`} required />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-xs font-bold mb-1.5">NIM</label>
-                            <input
-                              type="text"
-                              value={profile.nim}
-                              onChange={(e) => setProfile({ ...profile, nim: e.target.value })}
-                              className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-                            />
+                            <input type="text" value={profile.nim} onChange={(e) => setProfile({ ...profile, nim: e.target.value })} className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`} />
                           </div>
                           <div>
                             <label className="block text-xs font-bold mb-1.5">Semester</label>
-                            <select
-                              value={profile.semester}
-                              onChange={(e) => setProfile({ ...profile, semester: e.target.value })}
-                              className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-                            >
+                            <select value={profile.semester} onChange={(e) => setProfile({ ...profile, semester: e.target.value })} className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}>
                               {Array.from({ length: 14 }, (_, i) => String(i + 1)).map((sem) => (
-                                <option key={sem} value={sem}>
-                                  Semester {sem}
-                                </option>
+                                <option key={sem} value={sem}>Semester {sem}</option>
                               ))}
                             </select>
                           </div>
                         </div>
                         <div>
                           <label className="block text-xs font-bold mb-1.5">Universitas</label>
-                          <input
-                            type="text"
-                            value={profile.university}
-                            onChange={(e) => setProfile({ ...profile, university: e.target.value })}
-                            className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-                          />
+                          <input type="text" value={profile.university} onChange={(e) => setProfile({ ...profile, university: e.target.value })} className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`} />
                         </div>
                         <div>
                           <label className="block text-xs font-bold mb-1.5">Jurusan / Program Studi</label>
-                          <input
-                            type="text"
-                            value={profile.major}
-                            onChange={(e) => setProfile({ ...profile, major: e.target.value })}
-                            className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-                          />
+                          <input type="text" value={profile.major} onChange={(e) => setProfile({ ...profile, major: e.target.value })} className={`w-full px-4 py-3 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`} />
                         </div>
-
-                        <button
-                          type="submit"
-                          className={`px-6 py-3 rounded-full text-xs font-extrabold transition ${theme.accentBg}`}
-                        >
+                        <button type="submit" className={`px-6 py-3 rounded-full text-xs font-extrabold transition ${theme.accentBg}`}>
                           Simpan Profil Mahasiswa
                         </button>
                       </form>
@@ -2161,14 +1624,11 @@ Pengingat: ${task.reminder}`,
                 </div>
               )}
 
-              {/* TAB 6: PENGATURAN */}
               {activeTab === 'pengaturan' && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-2xl font-extrabold">Pengaturan PangKuliah</h3>
-                    <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>
-                      Atur tema tampilan, pengingat tugas, dan daftar mata kuliah terpusat
-                    </p>
+                    <p className={`text-xs sm:text-sm ${theme.textSecondary}`}>Atur tema tampilan, pengingat tugas, dan daftar mata kuliah terpusat</p>
                   </div>
 
                   <section className={`rounded-3xl p-6 ${theme.cardBg} ${theme.cardBorder}`}>
@@ -2182,24 +1642,13 @@ Pengingat: ${task.reminder}`,
                         return (
                           <button
                             key={preset.id}
-                            onClick={() => {
-                              setThemeKey(preset.id);
-                              showToast(`Tema diubah ke ${preset.name}`);
-                            }}
-                            className={`p-4 rounded-3xl text-left border transition ${
-                              selected
-                                ? 'ring-2 ring-violet-500 border-violet-500'
-                                : theme.cardBorder
-                            } ${theme.subCardBg}`}
+                            onClick={() => { setThemeKey(preset.id); showToast(`Tema diubah ke ${preset.name}`); }}
+                            className={`p-4 rounded-3xl text-left border transition ${selected ? 'ring-2 ring-violet-500 border-violet-500' : theme.cardBorder} ${theme.subCardBg}`}
                           >
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-1.5">
                                 {preset.swatchPreview.map((hex, idx) => (
-                                  <span
-                                    key={idx}
-                                    className="w-5 h-5 rounded-full border border-zinc-400/40 shadow-sm"
-                                    style={{ backgroundColor: hex }}
-                                  />
+                                  <span key={idx} className="w-5 h-5 rounded-full border border-zinc-400/40 shadow-sm" style={{ backgroundColor: hex }} />
                                 ))}
                               </div>
                               {selected && <CheckCircle2 size={18} className="text-violet-500" />}
@@ -2216,32 +1665,17 @@ Pengingat: ${task.reminder}`,
                     <div className="flex flex-wrap items-center justify-between gap-4">
                       <div>
                         <h4 className="text-base font-extrabold">Pengingat Tugas & Suara Lonceng</h4>
-                        <p className={`text-xs mt-0.5 ${theme.textSecondary}`}>
-                          Tampilkan banner peringatan & bunyikan efek suara lembut (ding) saat tugas mendekati tenggat
-                        </p>
+                        <p className={`text-xs mt-0.5 ${theme.textSecondary}`}>Tampilkan banner peringatan & bunyikan efek suara lembut (ding) saat tugas mendekati tenggat</p>
                       </div>
-
                       <div className="flex items-center gap-2.5">
-                        <button
-                          onClick={handleEnableReminders}
-                          className={`px-4 py-2 rounded-full text-xs font-bold ${theme.accentSoft}`}
-                        >
+                        <button onClick={handleEnableReminders} className={`px-4 py-2 rounded-full text-xs font-bold ${theme.accentSoft}`}>
                           Izin Notifikasi & Tes Ding
                         </button>
                         <button
-                          onClick={() => {
-                            setRemindersEnabled(!remindersEnabled);
-                            showToast(!remindersEnabled ? 'Pengingat diaktifkan' : 'Pengingat dimatikan');
-                          }}
-                          className={`w-14 h-8 rounded-full p-1 transition ${
-                            remindersEnabled ? 'bg-emerald-500' : 'bg-zinc-400/50'
-                          }`}
+                          onClick={() => { setRemindersEnabled(!remindersEnabled); showToast(!remindersEnabled ? 'Pengingat diaktifkan' : 'Pengingat dimatikan'); }}
+                          className={`w-14 h-8 rounded-full p-1 transition ${remindersEnabled ? 'bg-emerald-500' : 'bg-zinc-400/50'}`}
                         >
-                          <div
-                            className={`w-6 h-6 rounded-full bg-white shadow transition-transform ${
-                              remindersEnabled ? 'translate-x-6' : 'translate-x-0'
-                            }`}
-                          />
+                          <div className={`w-6 h-6 rounded-full bg-white shadow transition-transform ${remindersEnabled ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
                       </div>
                     </div>
@@ -2251,17 +1685,9 @@ Pengingat: ${task.reminder}`,
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                       <div>
                         <h4 className="text-base font-extrabold">Kelola Master Mata Kuliah</h4>
-                        <p className={`text-xs ${theme.textSecondary}`}>
-                          Perubahan nama, dosen, SKS, atau warna pastel otomatis tersinkronisasi ke Jadwal, Tugas, dan Materi
-                        </p>
+                        <p className={`text-xs ${theme.textSecondary}`}>Perubahan nama, dosen, SKS, atau warna pastel otomatis tersinkronisasi ke Jadwal, Tugas, dan Materi</p>
                       </div>
-                      <button
-                        onClick={() => {
-                          setEditingCourse(null);
-                          setCourseModalOpen(true);
-                        }}
-                        className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${theme.accentBg}`}
-                      >
+                      <button onClick={() => { setEditingCourse(null); setCourseModalOpen(true); }} className={`px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 ${theme.accentBg}`}>
                         <Plus size={15} />
                         <span>Tambah Mata Kuliah</span>
                       </button>
@@ -2271,12 +1697,7 @@ Pengingat: ${task.reminder}`,
                       {(courses || []).map((course) => {
                         const pastel = getPastel(course.color);
                         return (
-                          <div
-                            key={course.id}
-                            className={`p-4 rounded-3xl border flex items-center justify-between gap-3 ${
-                              theme.isDark ? pastel.darkCard : pastel.lightCard
-                            }`}
-                          >
+                          <div key={course.id} className={`p-4 rounded-3xl border flex items-center justify-between gap-3 ${theme.isDark ? pastel.darkCard : pastel.lightCard}`}>
                             <div className="min-w-0">
                               <div className="flex items-center gap-2">
                                 <span className={`w-3 h-3 rounded-full ${pastel.dot}`} />
@@ -2287,21 +1708,10 @@ Pengingat: ${task.reminder}`,
                               <p className={`text-xs truncate ${theme.textSecondary}`}>{course.lecturer}</p>
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
-                              <button
-                                onClick={() => {
-                                  setEditingCourse(course);
-                                  setCourseModalOpen(true);
-                                }}
-                                className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80"
-                                title="Edit Mata Kuliah"
-                              >
+                              <button onClick={() => { setEditingCourse(course); setCourseModalOpen(true); }} className="p-2 rounded-full bg-white/80 text-zinc-900">
                                 <Edit3 size={14} />
                               </button>
-                              <button
-                                onClick={() => handleDeleteCourse(course.id)}
-                                className="p-2 rounded-full bg-white/80 dark:bg-zinc-900/80 text-rose-500"
-                                title="Hapus Mata Kuliah"
-                              >
+                              <button onClick={() => handleDeleteCourse(course.id)} className="p-2 rounded-full bg-white/80 text-rose-500">
                                 <Trash2 size={14} />
                               </button>
                             </div>
@@ -2311,10 +1721,7 @@ Pengingat: ${task.reminder}`,
                     </div>
 
                     <div className="mt-6 pt-5 border-t border-zinc-500/15 flex justify-end">
-                      <button
-                        onClick={handleResetDemo}
-                        className="px-4 py-2 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-500/10 inline-flex items-center gap-1.5"
-                      >
+                      <button onClick={handleResetDemo} className="px-4 py-2 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-500/10 inline-flex items-center gap-1.5">
                         <RotateCcw size={14} />
                         <span>Reset Data Demo Awal</span>
                       </button>
@@ -2325,10 +1732,7 @@ Pengingat: ${task.reminder}`,
             </main>
           </div>
 
-          {/* BOTTOM NAVIGATION BAR (MOBILE) */}
-          <nav
-            className={`lg:hidden fixed bottom-0 inset-x-0 z-40 border-t px-2 py-2 flex items-center justify-around backdrop-blur-md ${theme.sidebarBg}`}
-          >
+          <nav className={`lg:hidden fixed bottom-0 inset-x-0 z-40 border-t px-2 py-2 flex items-center justify-around backdrop-blur-md ${theme.sidebarBg}`}>
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = activeTab === item.id;
@@ -2347,15 +1751,12 @@ Pengingat: ${task.reminder}`,
             })}
           </nav>
 
-          {/* MODAL DETAIL MATA KULIAH */}
           {detailSchedule && (
             <ModalWrapper onClose={() => setDetailSchedule(null)} theme={theme} title="Detail Mata Kuliah">
               {(() => {
                 const course = getCourse(detailSchedule.courseId);
                 const pastel = getPastel(course.color);
-                const relatedTasks = (tasks || []).filter(
-                  (t) => t.courseId === course.id && !t.completed
-                );
+                const relatedTasks = (tasks || []).filter((t) => t.courseId === course.id && !t.completed);
                 const nextDate = getNextOccurrenceForDay(detailSchedule.day, detailSchedule.startTime);
                 const [eh, em] = (detailSchedule.endTime || '10:00').split(':').map(Number);
                 const endDate = new Date(nextDate);
@@ -2364,20 +1765,14 @@ Pengingat: ${task.reminder}`,
                   title: `Kuliah: ${course.name} (${course.code})`,
                   startDate: nextDate,
                   endDate,
-                  details: `Dosen: ${course.lecturer}
-SKS: ${course.sks}
-Link: ${detailSchedule.link || '-'}`,
+                  details: `Dosen: ${course.lecturer} | SKS: ${course.sks}`,
                   location: detailSchedule.room,
                 });
 
                 return (
                   <div className="space-y-4">
                     <div className={`p-4 rounded-3xl border ${theme.isDark ? pastel.darkCard : pastel.lightCard}`}>
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${
-                          theme.isDark ? pastel.darkBadge : pastel.lightBadge
-                        }`}
-                      >
+                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-extrabold border ${theme.isDark ? pastel.darkBadge : pastel.lightBadge}`}>
                         {course.code} • {course.sks} SKS
                       </span>
                       <h4 className="text-xl font-extrabold mt-2">{course.name}</h4>
@@ -2387,9 +1782,7 @@ Link: ${detailSchedule.link || '-'}`,
                     <div className={`p-4 rounded-2xl space-y-2.5 text-xs ${theme.subCardBg}`}>
                       <div className="flex items-center justify-between">
                         <span className={theme.textSecondary}>Hari & Jam</span>
-                        <span className="font-bold">
-                          {detailSchedule.day}, {detailSchedule.startTime} – {detailSchedule.endTime}
-                        </span>
+                        <span className="font-bold">{detailSchedule.day}, {detailSchedule.startTime} – {detailSchedule.endTime}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className={theme.textSecondary}>Ruangan</span>
@@ -2397,18 +1790,10 @@ Link: ${detailSchedule.link || '-'}`,
                       </div>
                       {detailSchedule.link && (
                         <div className="flex items-center justify-between gap-2 pt-1">
-                          <a
-                            href={detailSchedule.link}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-violet-500 font-bold underline truncate"
-                          >
+                          <a href={detailSchedule.link} target="_blank" rel="noreferrer" className="text-violet-500 font-bold underline truncate">
                             {detailSchedule.link}
                           </a>
-                          <button
-                            onClick={() => handleCopy(detailSchedule.link, 'Link kelas')}
-                            className="px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-500 font-bold shrink-0"
-                          >
+                          <button onClick={() => handleCopy(detailSchedule.link, 'Link kelas')} className="px-2.5 py-1 rounded-full bg-violet-500/15 text-violet-500 font-bold shrink-0">
                             Salin Link
                           </button>
                         </div>
@@ -2416,16 +1801,11 @@ Link: ${detailSchedule.link || '-'}`,
                     </div>
 
                     <div>
-                      <p className="text-xs font-extrabold mb-2">
-                        Tugas Aktif Mata Kuliah Ini ({relatedTasks.length})
-                      </p>
+                      <p className="text-xs font-extrabold mb-2">Tugas Aktif Mata Kuliah Ini ({relatedTasks.length})</p>
                       {relatedTasks.length > 0 ? (
                         <ul className="space-y-1.5">
                           {relatedTasks.map((t) => (
-                            <li
-                              key={t.id}
-                              className={`text-xs p-2.5 rounded-xl flex items-center justify-between ${theme.subCardBg}`}
-                            >
+                            <li key={t.id} className={`text-xs p-2.5 rounded-xl flex items-center justify-between ${theme.subCardBg}`}>
                               <span className="font-semibold">{t.title}</span>
                               <span className={theme.textSecondary}>{formatDeadlineLabel(t.deadline)}</span>
                             </li>
@@ -2436,24 +1816,16 @@ Link: ${detailSchedule.link || '-'}`,
                       )}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-2 pt-2">
-                      <a
-                        href={gcalUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={`flex-1 py-2.5 px-4 rounded-full text-xs font-bold text-center inline-flex items-center justify-center gap-1.5 ${theme.accentBg}`}
-                      >
-                        <CalendarPlus size={15} />
-                        <span>Set Alarm di Google Calendar</span>
-                      </a>
-                    </div>
+                    <a href={gcalUrl} target="_blank" rel="noreferrer" className={`w-full py-2.5 px-4 rounded-full text-xs font-bold text-center inline-flex items-center justify-center gap-1.5 ${theme.accentBg}`}>
+                      <CalendarPlus size={15} />
+                      <span>Set Alarm di Google Calendar</span>
+                    </a>
                   </div>
                 );
               })()}
             </ModalWrapper>
           )}
 
-          {/* MODAL TAMBAH / EDIT JADWAL */}
           {scheduleModalOpen && (
             <ScheduleFormModal
               courses={courses}
@@ -2463,9 +1835,7 @@ Link: ${detailSchedule.link || '-'}`,
               onClose={() => setScheduleModalOpen(false)}
               onSave={(data) => {
                 if (editingSchedule) {
-                  setSchedules((prev) =>
-                    prev.map((s) => (s.id === editingSchedule.id ? { ...s, ...data } : s))
-                  );
+                  setSchedules((prev) => prev.map((s) => (s.id === editingSchedule.id ? { ...s, ...data } : s)));
                   showToast('Jadwal berhasil diperbarui!');
                 } else {
                   setSchedules((prev) => [...(prev || []), { ...data, id: `sch-${Date.now()}` }]);
@@ -2476,7 +1846,6 @@ Link: ${detailSchedule.link || '-'}`,
             />
           )}
 
-          {/* MODAL TAMBAH / EDIT MATA KULIAH */}
           {courseModalOpen && (
             <CourseFormModal
               initialData={editingCourse}
@@ -2484,9 +1853,7 @@ Link: ${detailSchedule.link || '-'}`,
               onClose={() => setCourseModalOpen(false)}
               onSave={(data) => {
                 if (editingCourse) {
-                  setCourses((prev) =>
-                    prev.map((c) => (c.id === editingCourse.id ? { ...c, ...data } : c))
-                  );
+                  setCourses((prev) => prev.map((c) => (c.id === editingCourse.id ? { ...c, ...data } : c)));
                   showToast('Mata kuliah diperbarui & tersinkronisasi!');
                 } else {
                   setCourses((prev) => [...(prev || []), { ...data, id: `mk-${Date.now()}` }]);
@@ -2497,7 +1864,6 @@ Link: ${detailSchedule.link || '-'}`,
             />
           )}
 
-          {/* MODAL TAMBAH / EDIT MATERI KULIAH */}
           {materialModalOpen && (
             <MaterialFormModal
               courses={courses}
@@ -2506,9 +1872,7 @@ Link: ${detailSchedule.link || '-'}`,
               onClose={() => setMaterialModalOpen(false)}
               onSave={(data) => {
                 if (editingMaterial) {
-                  setMaterials((prev) =>
-                    prev.map((m) => (m.id === editingMaterial.id ? { ...m, ...data } : m))
-                  );
+                  setMaterials((prev) => prev.map((m) => (m.id === editingMaterial.id ? { ...m, ...data } : m)));
                   showToast('Materi kuliah diperbarui!');
                 } else {
                   setMaterials((prev) => [{ ...data, id: `mat-${Date.now()}` }, ...(prev || [])]);
@@ -2522,19 +1886,13 @@ Link: ${detailSchedule.link || '-'}`,
       );
     }
 
-    // =========================================================================
-    // 6. KOMPONEN FORM & MODAL PENDUKUNG
-    // =========================================================================
     function ModalWrapper({ title, onClose, theme, children }) {
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-pop">
           <div className={`w-full max-w-lg rounded-3xl p-6 shadow-2xl ${theme.cardBg} ${theme.cardBorder}`}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-extrabold">{title}</h3>
-              <button
-                onClick={onClose}
-                className="p-2 rounded-full hover:bg-zinc-500/15 transition"
-              >
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-zinc-500/15 transition">
                 <X size={18} />
               </button>
             </div>
@@ -2546,19 +1904,15 @@ Link: ${detailSchedule.link || '-'}`,
 
     function QuickTaskForm({ courses, theme, onAddTask }) {
       const [title, setTitle] = useState('');
-      const [courseId, setCourseId] = useState(courses?.[0]?.id || 'mk-1');
+      const [courseId, setCourseId] = useState(courses && courses[0] ? courses[0].id : 'mk-1');
       const [deadline, setDeadline] = useState(() => getFutureISO(24));
       const [reminder, setReminder] = useState('1h');
 
       useEffect(() => {
-        if (courses?.length > 0 && !courses.some((c) => c.id === courseId)) {
+        if (courses && courses.length > 0 && !courses.some((c) => c.id === courseId)) {
           setCourseId(courses[0].id);
         }
       }, [courses]);
-
-      const applyPreset = (hours) => {
-        setDeadline(getFutureISO(hours));
-      };
 
       const handleSubmit = (e) => {
         e.preventDefault();
@@ -2591,9 +1945,7 @@ Link: ${detailSchedule.link || '-'}`,
               className={`md:col-span-3 px-3.5 py-3 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}
             >
               {(courses || []).map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
             <input
@@ -2617,7 +1969,7 @@ Link: ${detailSchedule.link || '-'}`,
                 <button
                   key={p.label}
                   type="button"
-                  onClick={() => applyPreset(p.hours)}
+                  onClick={() => setDeadline(getFutureISO(p.hours))}
                   className={`px-3 py-1 rounded-full text-xs font-bold transition ${theme.accentSoft}`}
                 >
                   {p.label}
@@ -2636,10 +1988,7 @@ Link: ${detailSchedule.link || '-'}`,
                 <option value="1d">Ingatkan H-1</option>
               </select>
 
-              <button
-                type="submit"
-                className={`px-5 py-2 rounded-full text-xs font-extrabold flex items-center gap-1.5 ${theme.accentBg}`}
-              >
+              <button type="submit" className={`px-5 py-2 rounded-full text-xs font-extrabold flex items-center gap-1.5 ${theme.accentBg}`}>
                 <Plus size={15} />
                 <span>Tambah Tugas</span>
               </button>
@@ -2650,12 +1999,12 @@ Link: ${detailSchedule.link || '-'}`,
     }
 
     function ScheduleFormModal({ courses, initialData, defaultDay, theme, onClose, onSave }) {
-      const [courseId, setCourseId] = useState(initialData?.courseId || courses?.[0]?.id || 'mk-1');
-      const [day, setDay] = useState(initialData?.day || defaultDay || 'Senin');
-      const [startTime, setStartTime] = useState(initialData?.startTime || '08:00');
-      const [endTime, setEndTime] = useState(initialData?.endTime || '10:00');
-      const [room, setRoom] = useState(initialData?.room || '');
-      const [link, setLink] = useState(initialData?.link || '');
+      const [courseId, setCourseId] = useState(initialData ? initialData.courseId : (courses && courses[0] ? courses[0].id : 'mk-1'));
+      const [day, setDay] = useState(initialData ? initialData.day : (defaultDay || 'Senin'));
+      const [startTime, setStartTime] = useState(initialData ? initialData.startTime : '08:00');
+      const [endTime, setEndTime] = useState(initialData ? initialData.endTime : '10:00');
+      const [room, setRoom] = useState(initialData ? initialData.room : '');
+      const [link, setLink] = useState(initialData ? initialData.link : '');
 
       const handleSubmit = (e) => {
         e.preventDefault();
@@ -2663,23 +2012,13 @@ Link: ${detailSchedule.link || '-'}`,
       };
 
       return (
-        <ModalWrapper
-          title={initialData ? 'Edit Jadwal Kuliah' : 'Tambah Jadwal Kuliah'}
-          onClose={onClose}
-          theme={theme}
-        >
+        <ModalWrapper title={initialData ? 'Edit Jadwal Kuliah' : 'Tambah Jadwal Kuliah'} onClose={onClose} theme={theme}>
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div>
               <label className="block text-xs font-bold mb-1">Mata Kuliah</label>
-              <select
-                value={courseId}
-                onChange={(e) => setCourseId(e.target.value)}
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}
-              >
+              <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className={`w-full px-4 py-2.5 rounded-2xl text-sm font-medium border outline-none ${theme.inputBg}`}>
                 {(courses || []).map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.code} — {c.name}
-                  </option>
+                  <option key={c.id} value={c.id}>{c.code} — {c.name}</option>
                 ))}
               </select>
             </div>
@@ -2687,75 +2026,33 @@ Link: ${detailSchedule.link || '-'}`,
             <div className="grid grid-cols-3 gap-2.5">
               <div>
                 <label className="block text-xs font-bold mb-1">Hari</label>
-                <select
-                  value={day}
-                  onChange={(e) => setDay(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}
-                >
-                  {DAYS.map((d) => (
-                    <option key={d} value={d}>
-                      {d}
-                    </option>
-                  ))}
+                <select value={day} onChange={(e) => setDay(e.target.value)} className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}>
+                  {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1">Jam Mulai</label>
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}
-                />
+                <input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`} />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1">Jam Selesai</label>
-                <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}
-                />
+                <input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} className={`w-full px-3 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`} />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold mb-1">Ruangan / Gedung</label>
-              <input
-                type="text"
-                value={room}
-                onChange={(e) => setRoom(e.target.value)}
-                placeholder="Contoh: Gedung A2 Ruang 301"
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                required
-              />
+              <input type="text" value={room} onChange={(e) => setRoom(e.target.value)} placeholder="Contoh: Gedung A2 Ruang 301" className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} required />
             </div>
 
             <div>
               <label className="block text-xs font-bold mb-1">Link Kelas Online (Opsional)</label>
-              <input
-                type="url"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                placeholder="https://meet.google.com/..."
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-              />
+              <input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://meet.google.com/..." className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 rounded-full text-xs font-bold opacity-75"
-              >
-                Batal
-              </button>
-              <button
-                type="submit"
-                className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}
-              >
-                Simpan Jadwal
-              </button>
+              <button type="button" onClick={onClose} className="px-4 py-2 rounded-full text-xs font-bold opacity-75">Batal</button>
+              <button type="submit" className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}>Simpan Jadwal</button>
             </div>
           </form>
         </ModalWrapper>
@@ -2763,76 +2060,40 @@ Link: ${detailSchedule.link || '-'}`,
     }
 
     function CourseFormModal({ initialData, theme, onClose, onSave }) {
-      const [code, setCode] = useState(initialData?.code || 'IF320');
-      const [name, setName] = useState(initialData?.name || '');
-      const [lecturer, setLecturer] = useState(initialData?.lecturer || '');
-      const [sks, setSks] = useState(initialData?.sks || 3);
-      const [color, setColor] = useState(initialData?.color || 'lavender');
+      const [code, setCode] = useState(initialData ? initialData.code : 'IF320');
+      const [name, setName] = useState(initialData ? initialData.name : '');
+      const [lecturer, setLecturer] = useState(initialData ? initialData.lecturer : '');
+      const [sks, setSks] = useState(initialData ? initialData.sks : 3);
+      const [color, setColor] = useState(initialData ? initialData.color : 'lavender');
 
       const handleSubmit = (e) => {
         e.preventDefault();
         if (!name.trim()) return;
-        onSave({
-          code: code.trim() || 'MK',
-          name: name.trim(),
-          lecturer: lecturer.trim() || 'Dosen Pengampu',
-          sks: Number(sks) || 2,
-          color,
-        });
+        onSave({ code: code.trim() || 'MK', name: name.trim(), lecturer: lecturer.trim() || 'Dosen Pengampu', sks: Number(sks) || 2, color });
       };
 
       return (
-        <ModalWrapper
-          title={initialData ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah Baru'}
-          onClose={onClose}
-          theme={theme}
-        >
+        <ModalWrapper title={initialData ? 'Edit Mata Kuliah' : 'Tambah Mata Kuliah Baru'} onClose={onClose} theme={theme}>
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div className="grid grid-cols-3 gap-2.5">
               <div>
                 <label className="block text-xs font-bold mb-1">Kode MK</label>
-                <input
-                  type="text"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                  required
-                />
+                <input type="text" value={code} onChange={(e) => setCode(e.target.value)} className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} required />
               </div>
               <div className="col-span-2">
                 <label className="block text-xs font-bold mb-1">Nama Mata Kuliah</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Contoh: Pemrograman Mobile"
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                  required
-                />
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Contoh: Pemrograman Mobile" className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} required />
               </div>
             </div>
 
             <div className="grid grid-cols-3 gap-2.5">
               <div className="col-span-2">
                 <label className="block text-xs font-bold mb-1">Nama Dosen</label>
-                <input
-                  type="text"
-                  value={lecturer}
-                  onChange={(e) => setLecturer(e.target.value)}
-                  placeholder="Nama lengkap beserta gelar"
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                />
+                <input type="text" value={lecturer} onChange={(e) => setLecturer(e.target.value)} placeholder="Nama lengkap beserta gelar" className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1">Bobot SKS</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="6"
-                  value={sks}
-                  onChange={(e) => setSks(e.target.value)}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                />
+                <input type="number" min="1" max="6" value={sks} onChange={(e) => setSks(e.target.value)} className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
               </div>
             </div>
 
@@ -2856,15 +2117,8 @@ Link: ${detailSchedule.link || '-'}`,
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={onClose} className="px-4 py-2 rounded-full text-xs font-bold opacity-75">
-                Batal
-              </button>
-              <button
-                type="submit"
-                className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}
-              >
-                Simpan Mata Kuliah
-              </button>
+              <button type="button" onClick={onClose} className="px-4 py-2 rounded-full text-xs font-bold opacity-75">Batal</button>
+              <button type="submit" className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}>Simpan Mata Kuliah</button>
             </div>
           </form>
         </ModalWrapper>
@@ -2872,103 +2126,52 @@ Link: ${detailSchedule.link || '-'}`,
     }
 
     function MaterialFormModal({ courses, initialData, theme, onClose, onSave }) {
-      const [courseId, setCourseId] = useState(initialData?.courseId || courses?.[0]?.id || 'mk-1');
-      const [meeting, setMeeting] = useState(initialData?.meeting || 1);
-      const [title, setTitle] = useState(initialData?.title || '');
-      const [link, setLink] = useState(initialData?.link || '');
-      const [notes, setNotes] = useState(initialData?.notes || '');
+      const [courseId, setCourseId] = useState(initialData ? initialData.courseId : (courses && courses[0] ? courses[0].id : 'mk-1'));
+      const [meeting, setMeeting] = useState(initialData ? initialData.meeting : 1);
+      const [title, setTitle] = useState(initialData ? initialData.title : '');
+      const [link, setLink] = useState(initialData ? initialData.link : '');
+      const [notes, setNotes] = useState(initialData ? initialData.notes : '');
 
       const handleSubmit = (e) => {
         e.preventDefault();
         if (!title.trim()) return;
-        onSave({
-          courseId,
-          meeting: Number(meeting) || 1,
-          title: title.trim(),
-          link: link.trim(),
-          notes: notes.trim(),
-        });
+        onSave({ courseId, meeting: Number(meeting) || 1, title: title.trim(), link: link.trim(), notes: notes.trim() });
       };
 
       return (
-        <ModalWrapper
-          title={initialData ? 'Edit Materi Kuliah' : 'Tambah Materi Kuliah'}
-          onClose={onClose}
-          theme={theme}
-        >
+        <ModalWrapper title={initialData ? 'Edit Materi Kuliah' : 'Tambah Materi Kuliah'} onClose={onClose} theme={theme}>
           <form onSubmit={handleSubmit} className="space-y-3.5">
             <div className="grid grid-cols-3 gap-2.5">
               <div className="col-span-2">
                 <label className="block text-xs font-bold mb-1">Mata Kuliah</label>
-                <select
-                  value={courseId}
-                  onChange={(e) => setCourseId(e.target.value)}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}
-                >
-                  {(courses || []).map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
+                <select value={courseId} onChange={(e) => setCourseId(e.target.value)} className={`w-full px-3.5 py-2.5 rounded-2xl text-xs font-bold border outline-none ${theme.inputBg}`}>
+                  {(courses || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-bold mb-1">Pertemuan Ke-</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="16"
-                  value={meeting}
-                  onChange={(e) => setMeeting(e.target.value)}
-                  className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                />
+                <input type="number" min="1" max="16" value={meeting} onChange={(e) => setMeeting(e.target.value)} className={`w-full px-3.5 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-bold mb-1">Judul Materi / Topik</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Contoh: Normalisasi Database 1NF - 3NF"
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-                required
-              />
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Contoh: Normalisasi Database 1NF - 3NF" className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} required />
             </div>
 
             <div>
               <label className="block text-xs font-bold mb-1">Link Materi (Google Drive / Notion / YouTube)</label>
-              <input
-                type="url"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                placeholder="https://drive.google.com/..."
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-              />
+              <input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://drive.google.com/..." className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
             </div>
 
             <div>
               <label className="block text-xs font-bold mb-1">Catatan Ringkas / Poin Penting</label>
-              <textarea
-                rows="3"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Tulis rangkuman singkat atau kisi-kisi dari dosen..."
-                className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`}
-              />
+              <textarea rows="3" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Tulis rangkuman singkat atau kisi-kisi dari dosen..." className={`w-full px-4 py-2.5 rounded-2xl text-sm border outline-none ${theme.inputBg}`} />
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={onClose} className="px-4 py-2 rounded-full text-xs font-bold opacity-75">
-                Batal
-              </button>
-              <button
-                type="submit"
-                className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}
-              >
-                Simpan Materi
-              </button>
+              <button type="button" onClick={onClose} className="px-4 py-2 rounded-full text-xs font-bold opacity-75">Batal</button>
+              <button type="submit" className={`px-5 py-2.5 rounded-full text-xs font-extrabold ${theme.accentBg}`}>Simpan Materi</button>
             </div>
           </form>
         </ModalWrapper>
